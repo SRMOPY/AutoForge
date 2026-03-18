@@ -184,9 +184,18 @@ def main():
             sys.exit(1)
 
     # Check for resume
-    checkpoint, project_description, output_dir = handle_resume(
+    resumed_checkpoint, resumed_description, resumed_output_dir = handle_resume(
         args.resume, project_description
     )
+
+    # If resume found something, use it — otherwise keep what we already have
+    if resumed_checkpoint:
+        checkpoint = resumed_checkpoint
+        project_description = resumed_description
+        output_dir = resumed_output_dir
+    else:
+        checkpoint = None
+        output_dir = None
 
     # Fresh run
     if not checkpoint:
