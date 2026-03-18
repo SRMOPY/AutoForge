@@ -1,0 +1,7 @@
+# Core dependencies
+crewai[google-genai]>=0.80.0
+crewai-tools>=0.17.0
+python-dotenv>=1.0.0
+
+# Dev dependencies (only needed for running tests and linting)
+# pip install -r requirements-dev.txt
