@@ -4,24 +4,18 @@ Covers input validation, checkpoint system, and crew construction.
 No real API calls — all LLM interactions are mocked.
 """
 
-import json
-import os
-import time
-import pytest
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from src.validate import validate_project_description, validate_provider, ValidationError
-from src.checkpoint import (
-    Checkpoint,
-    save_checkpoint,
-    load_checkpoint,
-    find_resumable,
-    new_checkpoint,
-    delete_checkpoint,
-    CHECKPOINT_DIR,
-)
+import pytest
 
+from src.checkpoint import (
+    delete_checkpoint,
+    find_resumable,
+    load_checkpoint,
+    new_checkpoint,
+    save_checkpoint,
+)
+from src.validate import ValidationError, validate_project_description, validate_provider
 
 # -------------------------------------------------------
 # Fixtures
@@ -171,10 +165,17 @@ class TestBuildCrew:
             get_llm("unknown")
 
     def test_agents_have_correct_roles(self, gemini_env):
-        with patch("src.crew.LLM"):
+        """
+        Verify agent roles are defined correctly without instantiating real agents.
+        CrewAI validates the LLM at Agent creation time, so we patch Agent itself.
+        """
+        with patch("src.crew.LLM"), patch("src.crew.Agent") as mock_agent:
+            mock_agent.return_value = MagicMock()
             from src.crew import build_agents, get_llm
             llm = get_llm("gemini")
-            architect, coder, reviewer = build_agents(llm)
-            assert architect.role == "Software Architect"
-            assert coder.role == "Senior Software Engineer"
-            assert reviewer.role == "Code Reviewer & Security Auditor"
+            build_agents(llm)
+
+            roles = [call.kwargs["role"] for call in mock_agent.call_args_list]
+            assert "Software Architect" in roles
+            assert "Senior Software Engineer" in roles
+            assert "Code Reviewer & Security Auditor" in roles

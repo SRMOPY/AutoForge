@@ -130,7 +130,7 @@ def handle_resume(run_id: str | None, project_description: str | None) -> tuple:
 def save_report(output_dir: str, result: str, project_description: str):
     report_path = Path(output_dir) / "REVIEW_REPORT.md"
     with open(report_path, "w", encoding="utf-8") as f:
-        f.write(f"# AutoForge Review Report\n\n")
+        f.write("# AutoForge Review Report\n\n")
         f.write(f"**Project:** {project_description}\n\n")
         f.write("---\n\n")
         f.write(result)
@@ -209,7 +209,7 @@ def main():
             checkpoint=checkpoint,
         )
     except KeyboardInterrupt:
-        print(f"\n\n⏸️   Interrupted. Resume later with:")
+        print("\n\n⏸️   Interrupted. Resume later with:")
         print(f"    python main.py --resume {checkpoint.run_id}\n")
         sys.exit(0)
     except Exception as e:

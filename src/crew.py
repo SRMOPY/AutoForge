@@ -9,11 +9,11 @@ Three agents work sequentially:
 
 import os
 import time
-from crewai import Agent, Task, Crew, Process, LLM
-from crewai_tools import FileWriterTool, DirectoryReadTool
+
+from crewai import LLM, Agent, Crew, Process, Task
+from crewai_tools import DirectoryReadTool, FileWriterTool
 
 from src.checkpoint import Checkpoint, save_checkpoint
-
 
 # -----------------------------------------------------------
 # MODEL SETUP
